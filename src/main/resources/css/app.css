@@ -1,0 +1,83 @@
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-font-size: 14px;
+    -fx-primary: #2563eb;
+    -fx-primary-dark: #1d4ed8;
+    -fx-surface: #ffffff;
+    -fx-background: #f1f5f9;
+    -fx-text: #0f172a;
+    -fx-muted: #64748b;
+    -fx-danger: #dc2626;
+}
+
+.page-background {
+    -fx-background-color: -fx-background;
+}
+
+.card,
+.topbar {
+    -fx-background-color: -fx-surface;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.12), 24, 0.08, 0, 8);
+}
+
+.topbar {
+    -fx-background-radius: 0;
+}
+
+.title {
+    -fx-font-size: 28px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -fx-text;
+}
+
+.heading {
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -fx-text;
+}
+
+.subtitle,
+.muted-text {
+    -fx-text-fill: -fx-muted;
+}
+
+.error-text {
+    -fx-text-fill: -fx-danger;
+}
+
+.text-field,
+.password-field {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 11 12;
+}
+
+.text-field:focused,
+.password-field:focused {
+    -fx-border-color: -fx-primary;
+}
+
+.button {
+    -fx-cursor: hand;
+    -fx-font-weight: 700;
+    -fx-padding: 11 18;
+    -fx-background-radius: 8;
+}
+
+.primary-button {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+}
+
+.primary-button:hover {
+    -fx-background-color: -fx-primary-dark;
+}
+
+.secondary-button {
+    -fx-background-color: #e2e8f0;
+    -fx-text-fill: -fx-text;
+}
+
