@@ -131,6 +131,10 @@
     -fx-text-fill: -fx-danger;
 }
 
+.success-text {
+    -fx-text-fill: #15803d;
+}
+
 .text-field,
 .password-field {
     -fx-background-color: #f8fafc;

@@ -1,5 +1,6 @@
 package mn.edu.internship.hotel.controller;
 
+import javafx.animation.PauseTransition;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -7,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import mn.edu.internship.hotel.config.DatabaseConfig;
 import mn.edu.internship.hotel.config.MySqlConnectionFactory;
 import mn.edu.internship.hotel.dao.JdbcUserDao;
@@ -44,10 +46,21 @@ public final class LoginController {
         };
         task.setOnSucceeded(event -> {
             UserSession.start(task.getValue());
-            Stage stage = (Stage) loginButton.getScene().getWindow();
-            SceneNavigator.show(stage, "/fxml/dashboard.fxml", "Зочид буудлын систем");
+            errorLabel.getStyleClass().remove("error-text");
+            errorLabel.getStyleClass().add("success-text");
+            errorLabel.setText("Амжилттай нэвтэрлээ. Dashboard ачаалж байна...");
+            PauseTransition transition = new PauseTransition(Duration.millis(450));
+            transition.setOnFinished(ignored -> {
+                Stage stage = (Stage) loginButton.getScene().getWindow();
+                SceneNavigator.show(stage, "/fxml/dashboard.fxml", "Зочид буудлын систем");
+            });
+            transition.play();
         });
         task.setOnFailed(event -> {
+            errorLabel.getStyleClass().remove("success-text");
+            if (!errorLabel.getStyleClass().contains("error-text")) {
+                errorLabel.getStyleClass().add("error-text");
+            }
             Throwable failure = task.getException();
             if (failure instanceof AuthenticationException) {
                 errorLabel.setText(failure.getMessage());
