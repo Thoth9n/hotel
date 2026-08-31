@@ -39,5 +39,10 @@ class ReservationDateRulesTest {
                 LocalDate.of(2026, 7, 8)
         ));
     }
-}
 
+    @Test
+    void rejectsNonPositiveGuestCount() {
+        assertThrows(IllegalArgumentException.class,
+                () -> ReservationDateRules.requireValidGuestCount(0));
+    }
+}

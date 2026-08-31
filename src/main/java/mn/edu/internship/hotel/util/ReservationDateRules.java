@@ -26,5 +26,10 @@ public final class ReservationDateRules {
         return existingCheckIn.isBefore(requestedCheckOut)
                 && existingCheckOut.isAfter(requestedCheckIn);
     }
-}
 
+    public static void requireValidGuestCount(int guestCount) {
+        if (guestCount <= 0) {
+            throw new IllegalArgumentException("Зочдын тоо 0-ээс их байна.");
+        }
+    }
+}
