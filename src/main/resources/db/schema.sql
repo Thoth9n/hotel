@@ -1,3 +1,5 @@
+USE hotel_management;
+
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(80) NOT NULL UNIQUE,
@@ -130,4 +132,3 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     INDEX idx_audit_created_at (created_at),
     INDEX idx_audit_entity (entity_type, entity_id)
 );
-

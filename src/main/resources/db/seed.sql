@@ -1,3 +1,5 @@
+USE hotel_management;
+
 INSERT INTO room_types (name, capacity, base_price, description)
 VALUES
     ('SINGLE', 1, 120000.00, 'Нэг хүний стандарт өрөө'),
@@ -21,4 +23,3 @@ ON DUPLICATE KEY UPDATE room_number = VALUES(room_number);
 INSERT INTO rooms (room_number, floor, room_type_id, status, active)
 SELECT '201', 2, id, 'AVAILABLE', TRUE FROM room_types WHERE name = 'DELUXE'
 ON DUPLICATE KEY UPDATE room_number = VALUES(room_number);
-
