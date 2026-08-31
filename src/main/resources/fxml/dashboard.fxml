@@ -39,7 +39,10 @@
                 <Button text="+ Өрөө нэмэх" onAction="#handleAddRoom" styleClass="primary-button"/>
             </HBox>
             <Label fx:id="roomMessageLabel" styleClass="muted-text"/>
-            <TableView fx:id="roomsTable" VBox.vgrow="ALWAYS" placeholder="Өрөөний мэдээлэл алга байна.">
+            <TableView fx:id="roomsTable" VBox.vgrow="ALWAYS">
+                <placeholder>
+                    <Label text="Өрөөний мэдээлэл алга байна." styleClass="muted-text"/>
+                </placeholder>
                 <columns>
                     <TableColumn fx:id="roomNumberColumn" text="Дугаар" prefWidth="120"/>
                     <TableColumn fx:id="floorColumn" text="Давхар" prefWidth="100"/>
