@@ -99,6 +99,44 @@
     -fx-background-radius: 10;
 }
 
+.table-view .column-header-background {
+    -fx-background-color: #eff6ff;
+    -fx-background-radius: 10 10 0 0;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-background-color: transparent;
+    -fx-size: 38px;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #1e3a8a;
+    -fx-font-weight: 800;
+}
+
+.table-row-cell {
+    -fx-cell-size: 38px;
+    -fx-border-color: transparent transparent #e2e8f0 transparent;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #dbeafe;
+    -fx-text-fill: #0f172a;
+}
+
+.dialog-pane {
+    -fx-background-color: #f8fafc;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #eff6ff;
+}
+
+.dialog-pane .button-bar .button {
+    -fx-min-width: 120px;
+}
+
 .card,
 .topbar {
     -fx-background-color: -fx-surface;

@@ -17,6 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.CheckBox;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Pos;
 import javafx.scene.control.ButtonBar;
@@ -42,6 +43,8 @@ import mn.edu.internship.hotel.util.SceneNavigator;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.time.LocalDate;
 
 public final class DashboardController {
@@ -207,6 +210,43 @@ public final class DashboardController {
                 } catch (Exception exception) { showError("Захиалга үүсгэхэд алдаа гарлаа", exception); }
             });
         } catch (Exception exception) { showError("Захиалга эхлүүлэхэд алдаа гарлаа", exception); }
+    }
+
+    @FXML
+    private void handleAddReservationBetter() {
+        try {
+            var factory = new MySqlConnectionFactory(DatabaseConfig.fromEnvironment());
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle("Шинэ бүлгийн захиалга");
+            dialog.setHeaderText("Үйлчлүүлэгч болон нэг буюу хэд хэдэн өрөө сонгоно уу");
+            ButtonType save = new ButtonType("Захиалга баталгаажуулах", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(save, ButtonType.CANCEL);
+            TextField first = new TextField(), last = new TextField(), phone = new TextField(), email = new TextField();
+            DatePicker in = new DatePicker(LocalDate.now()), out = new DatePicker(LocalDate.now().plusDays(1));
+            TextField guests = new TextField("1"), request = new TextField();
+            ListView<Room> roomList = new ListView<>(); roomList.setPrefHeight(170);
+            Set<Room> checkedRooms = new LinkedHashSet<>();
+            roomList.setCellFactory(list -> new javafx.scene.control.ListCell<>() {
+                private final CheckBox checkBox = new CheckBox();
+                { checkBox.setOnAction(event -> { if (getItem() != null) { if (checkBox.isSelected()) checkedRooms.add(getItem()); else checkedRooms.remove(getItem()); } }); }
+                @Override protected void updateItem(Room item, boolean empty) { super.updateItem(item, empty); setText(null); setGraphic(empty || item == null ? null : checkBox); if (!empty && item != null) { checkBox.setText(item.roomNumber() + "  ·  " + item.roomType().name() + "  ·  " + item.roomType().capacity() + " ор"); checkBox.setSelected(checkedRooms.contains(item)); } }
+            });
+            Button find = new Button("Боломжит өрөө шинэчлэх");
+            find.setOnAction(event -> { try { checkedRooms.clear(); roomList.getItems().setAll(new JdbcRoomAvailabilityDao(factory).findAvailable(in.getValue(), out.getValue(), 1)); } catch (Exception e) { showError("Өрөө хайхад алдаа гарлаа", e); } });
+            GridPane form = new GridPane(); form.setHgap(12); form.setVgap(10);
+            form.addRow(0, new Label("Нэр *"), first); form.addRow(1, new Label("Овог *"), last); form.addRow(2, new Label("Утас *"), phone); form.addRow(3, new Label("Имэйл"), email);
+            form.addRow(4, new Label("Check-in"), in); form.addRow(5, new Label("Check-out"), out); form.addRow(6, new Label("Нийт зочин"), guests); form.addRow(7, new Label("Өрөө сонгох"), roomList); form.addRow(8, new Label("Хүсэлт"), request); form.add(find, 1, 9);
+            dialog.getDialogPane().setContent(form); dialog.setResultConverter(button -> button == save ? button : null);
+            dialog.showAndWait().ifPresent(button -> { try {
+                List<Room> selected = List.copyOf(checkedRooms); if (selected.isEmpty()) throw new IllegalArgumentException("Нэг буюу хэд хэдэн өрөө чагтална уу.");
+                int totalGuests = Integer.parseInt(guests.getText()); int capacity = selected.stream().mapToInt(r -> r.roomType().capacity()).sum();
+                if (capacity < totalGuests) throw new IllegalArgumentException("Сонгосон өрөөнүүдийн нийт багтаамж хүрэлцэхгүй байна.");
+                Customer customer = new Customer(0, first.getText(), last.getText(), phone.getText(), email.getText(), null, null, null);
+                long customerId = new JdbcCustomerDao(factory).save(customer); long remaining = totalGuests; long userId = UserSession.currentUser().orElseThrow().id();
+                JdbcReservationDao dao = new JdbcReservationDao(factory); for (Room room : selected) { int assigned = (int) Math.min(room.roomType().capacity(), remaining); dao.create(customerId, room.id(), in.getValue(), out.getValue(), assigned, request.getText(), userId); remaining -= assigned; }
+                loadRooms(); loadReservations(); showInfo("Амжилттай", selected.size() + " өрөөний захиалга үүсгэлээ.");
+            } catch (Exception e) { showError("Захиалга үүсгэхэд алдаа гарлаа", e); } });
+        } catch (Exception e) { showError("Захиалга эхлүүлэхэд алдаа гарлаа", e); }
     }
 
     @FXML private void handleCheckIn() { changeSelectedReservationStatus(ReservationStatus.CHECKED_IN); }

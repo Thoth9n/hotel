@@ -37,7 +37,7 @@
                 <Button text="Хайх" onAction="#handleSearch" styleClass="primary-button"/>
                 <Button text="Шинэчлэх" onAction="#handleRefresh" styleClass="secondary-button"/>
                 <Button text="+ Өрөө нэмэх" onAction="#handleAddRoom" styleClass="primary-button"/>
-                <Button text="+ Захиалга / үйлчлүүлэгч" onAction="#handleAddReservationMulti" styleClass="primary-button"/>
+                <Button text="+ Захиалга / үйлчлүүлэгч" onAction="#handleAddReservationBetter" styleClass="primary-button"/>
             </HBox>
             <Label fx:id="roomMessageLabel" styleClass="muted-text"/>
             <TableView fx:id="roomsTable" VBox.vgrow="ALWAYS">
