@@ -6,27 +6,42 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="mn.edu.internship.hotel.controller.LoginController"
-            prefWidth="1000" prefHeight="650" styleClass="page-background">
+            prefWidth="1100" prefHeight="700" styleClass="login-background">
     <center>
-        <VBox alignment="CENTER" maxWidth="420" spacing="16" styleClass="card">
-            <padding>
-                <Insets top="36" right="36" bottom="36" left="36"/>
-            </padding>
-            <Label text="Зочид буудлын систем" styleClass="title"/>
-            <Label text="Ажилтны нэвтрэх хэсэг" styleClass="subtitle"/>
-            <TextField fx:id="usernameField" promptText="Нэвтрэх нэр"
-                       onAction="#handleLogin" maxWidth="340"/>
-            <PasswordField fx:id="passwordField" promptText="Нууц үг"
-                           onAction="#handleLogin" maxWidth="340"/>
-            <Label fx:id="errorLabel" wrapText="true" styleClass="error-text"
-                   maxWidth="340"/>
-            <Button fx:id="loginButton" text="Нэвтрэх" onAction="#handleLogin"
-                    defaultButton="true" maxWidth="340" styleClass="primary-button"/>
-        </VBox>
+        <HBox alignment="CENTER" spacing="0" styleClass="login-shell">
+            <VBox prefWidth="500" prefHeight="560" spacing="22" styleClass="login-hero">
+                <padding><Insets top="54" right="48" bottom="54" left="48"/></padding>
+                <Label text="HOTEL" styleClass="brand-mark"/>
+                <Label text="Зочид буудлын систем" styleClass="hero-title" wrapText="true"/>
+                <Label text="Зочдоо угтан авах, өрөөгөө удирдах, өдөр тутмын үйл ажиллагаагаа нэг цонхоор хянахад зориулагдсан систем." styleClass="hero-copy" wrapText="true"/>
+                <VBox spacing="12" styleClass="feature-list">
+                    <Label text="✓  Өрөөний төлөвийг шууд харах" styleClass="feature-item"/>
+                    <Label text="✓  Захиалга, check-in, check-out" styleClass="feature-item"/>
+                    <Label text="✓  Төлбөр тооцоог найдвартай бүртгэх" styleClass="feature-item"/>
+                </VBox>
+            </VBox>
+            <VBox prefWidth="460" prefHeight="560" spacing="16" styleClass="login-card">
+                <padding><Insets top="54" right="54" bottom="54" left="54"/></padding>
+                <Label text="Тавтай морил" styleClass="form-title"/>
+                <Label text="Ажилтны эрхээрээ нэвтэрч үргэлжлүүлнэ үү." styleClass="subtitle" wrapText="true"/>
+                <VBox spacing="7">
+                    <Label text="Нэвтрэх нэр" styleClass="field-label"/>
+                    <TextField fx:id="usernameField" promptText="Жишээ: admin" onAction="#handleLogin"/>
+                </VBox>
+                <VBox spacing="7">
+                    <Label text="Нууц үг" styleClass="field-label"/>
+                    <PasswordField fx:id="passwordField" promptText="Нууц үгээ оруулна уу" onAction="#handleLogin"/>
+                </VBox>
+                <Label fx:id="errorLabel" wrapText="true" styleClass="error-text" minHeight="24"/>
+                <Button fx:id="loginButton" text="Нэвтрэх" onAction="#handleLogin"
+                        defaultButton="true" maxWidth="1.7976931348623157E308" styleClass="primary-button"/>
+                <Label text="Зөвхөн эрх бүхий ажилтан нэвтэрнэ." styleClass="login-note"/>
+            </VBox>
+        </HBox>
     </center>
 </BorderPane>
-

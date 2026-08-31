@@ -14,6 +14,80 @@
     -fx-background-color: -fx-background;
 }
 
+.login-background {
+    -fx-background-color: linear-gradient(to bottom right, #e8eef7, #f8fafc);
+}
+
+.login-shell {
+    -fx-background-radius: 22;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.18), 32, 0.12, 0, 12);
+}
+
+.login-hero {
+    -fx-background-color: linear-gradient(to bottom right, #0f2d52, #1d4ed8);
+    -fx-background-radius: 22 0 0 22;
+}
+
+.login-card {
+    -fx-background-color: white;
+    -fx-background-radius: 0 22 22 0;
+}
+
+.brand-mark {
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #93c5fd;
+    -fx-letter-spacing: 3px;
+}
+
+.hero-title {
+    -fx-font-size: 38px;
+    -fx-font-weight: 800;
+    -fx-text-fill: white;
+}
+
+.hero-copy {
+    -fx-font-size: 16px;
+    -fx-line-spacing: 5px;
+    -fx-text-fill: #dbeafe;
+}
+
+.feature-list {
+    -fx-padding: 18 0 0 0;
+}
+
+.feature-item {
+    -fx-font-size: 14px;
+    -fx-text-fill: #e0f2fe;
+}
+
+.form-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -fx-text;
+}
+
+.field-label {
+    -fx-font-weight: 700;
+    -fx-text-fill: #334155;
+}
+
+.login-card .text-field,
+.login-card .password-field {
+    -fx-pref-height: 48px;
+    -fx-font-size: 14px;
+}
+
+.login-card .primary-button {
+    -fx-pref-height: 48px;
+    -fx-font-size: 15px;
+}
+
+.login-note {
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 12px;
+}
+
 .content {
     -fx-padding: 28;
 }
