@@ -36,6 +36,7 @@
                 <ComboBox fx:id="statusFilter" prefWidth="180"/>
                 <Button text="Хайх" onAction="#handleSearch" styleClass="primary-button"/>
                 <Button text="Шинэчлэх" onAction="#handleRefresh" styleClass="secondary-button"/>
+                <Button text="+ Өрөө нэмэх" onAction="#handleAddRoom" styleClass="primary-button"/>
             </HBox>
             <Label fx:id="roomMessageLabel" styleClass="muted-text"/>
             <TableView fx:id="roomsTable" VBox.vgrow="ALWAYS" placeholder="Өрөөний мэдээлэл алга байна.">

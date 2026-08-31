@@ -3,15 +3,24 @@ package mn.edu.internship.hotel.controller;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import mn.edu.internship.hotel.config.DatabaseConfig;
 import mn.edu.internship.hotel.config.MySqlConnectionFactory;
 import mn.edu.internship.hotel.dao.JdbcRoomDao;
+import mn.edu.internship.hotel.dao.JdbcRoomAdminDao;
+import mn.edu.internship.hotel.dao.JdbcRoomTypeDao;
+import mn.edu.internship.hotel.model.RoomType;
 import mn.edu.internship.hotel.model.Room;
 import mn.edu.internship.hotel.model.RoomStatus;
 import mn.edu.internship.hotel.session.UserSession;
@@ -69,6 +78,62 @@ public final class DashboardController {
         roomNumberFilter.clear();
         statusFilter.getSelectionModel().selectFirst();
         loadRooms();
+    }
+
+    @FXML
+    private void handleAddRoom() {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Шинэ өрөө нэмэх");
+        dialog.setHeaderText("Өрөөний мэдээллийг оруулна уу");
+        ButtonType save = new ButtonType("Хадгалах", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(save, ButtonType.CANCEL);
+        TextField number = new TextField();
+        number.setPromptText("Жишээ: 301");
+        TextField floor = new TextField();
+        floor.setPromptText("Жишээ: 3");
+        ComboBox<RoomType> type = new ComboBox<>();
+        TextField notes = new TextField();
+        notes.setPromptText("Нэмэлт тэмдэглэл");
+        try {
+            type.getItems().setAll(new JdbcRoomTypeDao(new MySqlConnectionFactory(DatabaseConfig.fromEnvironment())).findAll());
+        } catch (Exception exception) {
+            showError("Өрөөний төрөл ачааллахад алдаа гарлаа", exception);
+        }
+        type.setPromptText("Өрөөний төрөл");
+        type.setCellFactory(list -> new javafx.scene.control.ListCell<>() {
+            @Override protected void updateItem(RoomType item, boolean empty) { super.updateItem(item, empty); setText(empty || item == null ? null : item.name()); }
+        });
+        type.setButtonCell(new javafx.scene.control.ListCell<>() {
+            @Override protected void updateItem(RoomType item, boolean empty) { super.updateItem(item, empty); setText(empty || item == null ? null : item.name()); }
+        });
+        GridPane form = new GridPane();
+        form.setHgap(12); form.setVgap(12); form.setAlignment(Pos.CENTER_LEFT);
+        form.addRow(0, new Label("Дугаар"), number);
+        form.addRow(1, new Label("Давхар"), floor);
+        form.addRow(2, new Label("Төрөл"), type);
+        form.addRow(3, new Label("Тэмдэглэл"), notes);
+        dialog.getDialogPane().setContent(form);
+        dialog.setResultConverter(button -> button == save ? button : null);
+        dialog.showAndWait().ifPresent(button -> {
+            try {
+                Integer floorValue = floor.getText().isBlank() ? null : Integer.valueOf(floor.getText().trim());
+                if (floorValue != null && (floorValue < 0 || floorValue > 100)) throw new IllegalArgumentException("Давхар 0-100 хооронд байна.");
+                if (type.getValue() == null) throw new IllegalArgumentException("Өрөөний төрөл сонгоно уу.");
+                new JdbcRoomAdminDao(new MySqlConnectionFactory(DatabaseConfig.fromEnvironment()))
+                        .create(number.getText(), floorValue, type.getValue().id(), notes.getText());
+                loadRooms();
+            } catch (Exception exception) {
+                showError("Өрөө хадгалахад алдаа гарлаа", exception);
+            }
+        });
+    }
+
+    private void showError(String header, Exception exception) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Алдаа");
+        alert.setHeaderText(header);
+        alert.setContentText(exception.getMessage());
+        alert.showAndWait();
     }
 
     @FXML
