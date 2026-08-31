@@ -21,7 +21,7 @@
                 <Label text="Зочдоо угтан авах, өрөөгөө удирдах, өдөр тутмын үйл ажиллагаагаа нэг цонхоор хянахад зориулагдсан систем." styleClass="hero-copy" wrapText="true"/>
                 <VBox spacing="12" styleClass="feature-list">
                     <Label text="✓  Өрөөний төлөвийг шууд харах" styleClass="feature-item"/>
-                    <Label text="✓  Захиалга, check-in, check-out" styleClass="feature-item"/>
+                    <Label text="✓  Захиалга, буудалд оруулах, гаргах" styleClass="feature-item"/>
                     <Label text="✓  Төлбөр тооцоог найдвартай бүртгэх" styleClass="feature-item"/>
                 </VBox>
             </VBox>

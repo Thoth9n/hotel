@@ -80,21 +80,21 @@ public final class DashboardController {
 
         statusFilter.getItems().add("Бүгд");
         for (RoomStatus status : RoomStatus.values()) {
-            statusFilter.getItems().add(status.name());
+            statusFilter.getItems().add(displayStatus(status));
         }
         statusFilter.getSelectionModel().selectFirst();
         roomNumberColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().roomNumber()));
         floorColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().floor()));
-        typeColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().roomType().name()));
+        typeColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(displayRoomType(data.getValue().roomType().name())));
         capacityColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().roomType().capacity()));
         priceColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().roomType().basePrice()));
-        statusColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().status().name()));
+        statusColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(displayStatus(data.getValue().status())));
         loadRooms();
         reservationCodeColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().reservationCode()));
         reservationCustomerColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().customer().fullName()));
         reservationRoomColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().room().roomNumber()));
         reservationDatesColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().checkInDate() + " - " + data.getValue().checkOutDate()));
-        reservationStatusColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().status().name()));
+        reservationStatusColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(displayStatus(data.getValue().status())));
         loadReservations();
     }
 
@@ -185,7 +185,7 @@ public final class DashboardController {
             GridPane form = new GridPane(); form.setHgap(12); form.setVgap(10);
             form.addRow(0, new Label("Нэр *"), first); form.addRow(1, new Label("Овог *"), last);
             form.addRow(2, new Label("Утас *"), phone); form.addRow(3, new Label("Имэйл"), email);
-            form.addRow(4, new Label("Check-in"), in); form.addRow(5, new Label("Check-out"), out);
+            form.addRow(4, new Label("Буудалд орох өдөр"), in); form.addRow(5, new Label("Буудлаас гарах өдөр"), out);
             form.addRow(6, new Label("Зочдын тоо"), guests); form.addRow(7, new Label("Өрөөнүүд"), rooms);
             form.addRow(8, new Label("Хүсэлт"), request); form.add(find, 1, 9);
             dialog.getDialogPane().setContent(form); dialog.setResultConverter(button -> button == save ? button : null);
@@ -229,13 +229,13 @@ public final class DashboardController {
             roomList.setCellFactory(list -> new javafx.scene.control.ListCell<>() {
                 private final CheckBox checkBox = new CheckBox();
                 { checkBox.setOnAction(event -> { if (getItem() != null) { if (checkBox.isSelected()) checkedRooms.add(getItem()); else checkedRooms.remove(getItem()); } }); }
-                @Override protected void updateItem(Room item, boolean empty) { super.updateItem(item, empty); setText(null); setGraphic(empty || item == null ? null : checkBox); if (!empty && item != null) { checkBox.setText(item.roomNumber() + "  ·  " + item.roomType().name() + "  ·  " + item.roomType().capacity() + " ор"); checkBox.setSelected(checkedRooms.contains(item)); } }
+                @Override protected void updateItem(Room item, boolean empty) { super.updateItem(item, empty); setText(null); setGraphic(empty || item == null ? null : checkBox); if (!empty && item != null) { checkBox.setText(item.roomNumber() + "  ·  " + displayRoomType(item.roomType().name()) + "  ·  " + item.roomType().capacity() + " ор"); checkBox.setSelected(checkedRooms.contains(item)); } }
             });
             Button find = new Button("Боломжит өрөө шинэчлэх");
             find.setOnAction(event -> { try { checkedRooms.clear(); roomList.getItems().setAll(new JdbcRoomAvailabilityDao(factory).findAvailable(in.getValue(), out.getValue(), 1)); } catch (Exception e) { showError("Өрөө хайхад алдаа гарлаа", e); } });
             GridPane form = new GridPane(); form.setHgap(12); form.setVgap(10);
             form.addRow(0, new Label("Нэр *"), first); form.addRow(1, new Label("Овог *"), last); form.addRow(2, new Label("Утас *"), phone); form.addRow(3, new Label("Имэйл"), email);
-            form.addRow(4, new Label("Check-in"), in); form.addRow(5, new Label("Check-out"), out); form.addRow(6, new Label("Нийт зочин"), guests); form.addRow(7, new Label("Өрөө сонгох"), roomList); form.addRow(8, new Label("Хүсэлт"), request); form.add(find, 1, 9);
+            form.addRow(4, new Label("Буудалд орох өдөр"), in); form.addRow(5, new Label("Буудлаас гарах өдөр"), out); form.addRow(6, new Label("Нийт зочин"), guests); form.addRow(7, new Label("Өрөө сонгох"), roomList); form.addRow(8, new Label("Хүсэлт"), request); form.add(find, 1, 9);
             dialog.getDialogPane().setContent(form); dialog.setResultConverter(button -> button == save ? button : null);
             dialog.showAndWait().ifPresent(button -> { try {
                 List<Room> selected = List.copyOf(checkedRooms); if (selected.isEmpty()) throw new IllegalArgumentException("Нэг буюу хэд хэдэн өрөө чагтална уу.");
@@ -346,7 +346,7 @@ public final class DashboardController {
 
     private javafx.scene.control.ListCell<Room> roomCell() {
         return new javafx.scene.control.ListCell<>() {
-            @Override protected void updateItem(Room item, boolean empty) { super.updateItem(item, empty); setText(empty || item == null ? null : item.roomNumber() + " / " + item.roomType().name()); }
+            @Override protected void updateItem(Room item, boolean empty) { super.updateItem(item, empty); setText(empty || item == null ? null : item.roomNumber() + " / " + displayRoomType(item.roomType().name())); }
         };
     }
 
@@ -357,6 +357,43 @@ public final class DashboardController {
         SceneNavigator.show(stage, "/fxml/login.fxml", "Зочид буудлын систем");
     }
 
+    private static RoomStatus parseStatus(String value) {
+        for (RoomStatus status : RoomStatus.values()) if (displayStatus(status).equals(value)) return status;
+        return RoomStatus.valueOf(value);
+    }
+
+    private static String displayStatus(RoomStatus status) {
+        return switch (status) {
+            case AVAILABLE -> "Сул";
+            case RESERVED -> "Захиалгатай";
+            case OCCUPIED -> "Буудалтай";
+            case CLEANING -> "Цэвэрлэгээ";
+            case MAINTENANCE -> "Засвартай";
+        };
+    }
+
+    private static String displayStatus(ReservationStatus status) {
+        return switch (status) {
+            case PENDING -> "Хүлээгдэж буй";
+            case CONFIRMED -> "Баталгаажсан";
+            case CHECKED_IN -> "Буудалсан";
+            case CHECKED_OUT -> "Гарсан";
+            case CANCELLED -> "Цуцалсан";
+            case NO_SHOW -> "Ирээгүй";
+        };
+    }
+
+    private static String displayRoomType(String type) {
+        return switch (type) {
+            case "SINGLE" -> "Нэг хүний";
+            case "DOUBLE" -> "Хосын";
+            case "TWIN" -> "Хоёр ортой";
+            case "DELUXE" -> "Тансаг";
+            case "SUITE" -> "Люкс";
+            default -> type;
+        };
+    }
+
     private void loadRooms() {
         roomMessageLabel.setText("Өрөөнүүдийг ачаалж байна...");
         Task<List<Room>> task = new Task<>() {
@@ -364,7 +401,7 @@ public final class DashboardController {
             protected List<Room> call() throws Exception {
                 String selectedStatus = statusFilter.getSelectionModel().getSelectedItem();
                 RoomStatus status = selectedStatus == null || selectedStatus.equals("Бүгд")
-                        ? null : RoomStatus.valueOf(selectedStatus);
+                        ? null : parseStatus(selectedStatus);
                 return new JdbcRoomDao(new MySqlConnectionFactory(DatabaseConfig.fromEnvironment()))
                         .findAll(roomNumberFilter.getText(), status);
             }

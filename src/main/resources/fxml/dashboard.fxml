@@ -56,8 +56,8 @@
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Label text="Захиалгууд" styleClass="heading"/>
                 <Button text="Шинэчлэх" onAction="#handleRefreshReservations" styleClass="secondary-button"/>
-                <Button text="Check-in" onAction="#handleCheckIn" styleClass="primary-button"/>
-                <Button text="Check-out" onAction="#handleCheckOut" styleClass="secondary-button"/>
+                <Button text="Буудалд оруулах" onAction="#handleCheckIn" styleClass="primary-button"/>
+                <Button text="Буудлаас гаргах" onAction="#handleCheckOut" styleClass="secondary-button"/>
                 <Button text="Төлбөр" onAction="#handlePayment" styleClass="secondary-button"/>
             </HBox>
             <TableView fx:id="reservationsTable" prefHeight="180">
