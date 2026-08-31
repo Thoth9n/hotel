@@ -37,6 +37,8 @@
                 <Button text="Хайх" onAction="#handleSearch" styleClass="primary-button"/>
                 <Button text="Шинэчлэх" onAction="#handleRefresh" styleClass="secondary-button"/>
                 <Button text="+ Өрөө нэмэх" onAction="#handleAddRoom" styleClass="primary-button"/>
+                <Button text="+ Үйлчлүүлэгч" onAction="#handleAddCustomer" styleClass="secondary-button"/>
+                <Button text="+ Захиалга" onAction="#handleAddReservation" styleClass="primary-button"/>
             </HBox>
             <Label fx:id="roomMessageLabel" styleClass="muted-text"/>
             <TableView fx:id="roomsTable" VBox.vgrow="ALWAYS">
@@ -50,6 +52,22 @@
                     <TableColumn fx:id="capacityColumn" text="Багтаамж" prefWidth="110"/>
                     <TableColumn fx:id="priceColumn" text="Үнэ / шөнө" prefWidth="150"/>
                     <TableColumn fx:id="statusColumn" text="Төлөв" prefWidth="150"/>
+                </columns>
+            </TableView>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Захиалгууд" styleClass="heading"/>
+                <Button text="Шинэчлэх" onAction="#handleRefreshReservations" styleClass="secondary-button"/>
+                <Button text="Check-in" onAction="#handleCheckIn" styleClass="primary-button"/>
+                <Button text="Check-out" onAction="#handleCheckOut" styleClass="secondary-button"/>
+                <Button text="Төлбөр" onAction="#handlePayment" styleClass="secondary-button"/>
+            </HBox>
+            <TableView fx:id="reservationsTable" prefHeight="180">
+                <columns>
+                    <TableColumn fx:id="reservationCodeColumn" text="Код" prefWidth="130"/>
+                    <TableColumn fx:id="reservationCustomerColumn" text="Үйлчлүүлэгч" prefWidth="180"/>
+                    <TableColumn fx:id="reservationRoomColumn" text="Өрөө" prefWidth="90"/>
+                    <TableColumn fx:id="reservationDatesColumn" text="Огноо" prefWidth="220"/>
+                    <TableColumn fx:id="reservationStatusColumn" text="Төлөв" prefWidth="130"/>
                 </columns>
             </TableView>
         </VBox>
