@@ -15,6 +15,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Pos;
 import javafx.scene.control.ButtonBar;
@@ -153,6 +155,57 @@ public final class DashboardController {
                 new JdbcReservationDao(factory).create(customer.getValue().id(), room.getValue().id(), in.getValue(), out.getValue(), Integer.parseInt(guests.getText()), request.getText(), userId);
                 loadRooms(); loadReservations(); showInfo("Амжилттай", "Захиалга үүсгэлээ.");
             } catch (Exception e) { showError("Захиалга үүсгэхэд алдаа гарлаа", e); } });
+        } catch (Exception exception) { showError("Захиалга эхлүүлэхэд алдаа гарлаа", exception); }
+    }
+
+    @FXML
+    private void handleAddReservationMulti() {
+        try {
+            var factory = new MySqlConnectionFactory(DatabaseConfig.fromEnvironment());
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle("Олон өрөөний захиалга");
+            ButtonType save = new ButtonType("Захиалах", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(save, ButtonType.CANCEL);
+
+            TextField first = new TextField(), last = new TextField(), phone = new TextField(), email = new TextField();
+            DatePicker in = new DatePicker(LocalDate.now()), out = new DatePicker(LocalDate.now().plusDays(1));
+            TextField guests = new TextField("1"), request = new TextField();
+            ListView<Room> rooms = new ListView<>();
+            rooms.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            rooms.setPrefHeight(150);
+            rooms.setCellFactory(list -> roomCell());
+            Button find = new Button("Боломжит өрөөнүүд хайх");
+            find.setOnAction(event -> {
+                try { rooms.getItems().setAll(new JdbcRoomAvailabilityDao(factory).findAvailable(in.getValue(), out.getValue(), 1)); }
+                catch (Exception exception) { showError("Өрөө хайхад алдаа гарлаа", exception); }
+            });
+            GridPane form = new GridPane(); form.setHgap(12); form.setVgap(10);
+            form.addRow(0, new Label("Нэр *"), first); form.addRow(1, new Label("Овог *"), last);
+            form.addRow(2, new Label("Утас *"), phone); form.addRow(3, new Label("Имэйл"), email);
+            form.addRow(4, new Label("Check-in"), in); form.addRow(5, new Label("Check-out"), out);
+            form.addRow(6, new Label("Зочдын тоо"), guests); form.addRow(7, new Label("Өрөөнүүд"), rooms);
+            form.addRow(8, new Label("Хүсэлт"), request); form.add(find, 1, 9);
+            dialog.getDialogPane().setContent(form); dialog.setResultConverter(button -> button == save ? button : null);
+            dialog.showAndWait().ifPresent(button -> {
+                try {
+                    List<Room> selectedRooms = List.copyOf(rooms.getSelectionModel().getSelectedItems());
+                    if (selectedRooms.isEmpty()) throw new IllegalArgumentException("Нэг буюу хэд хэдэн өрөө сонгоно уу.");
+                    Customer customer = new Customer(0, first.getText(), last.getText(), phone.getText(), email.getText(), null, null, null);
+                    long customerId = new JdbcCustomerDao(factory).save(customer);
+                    long userId = UserSession.currentUser().orElseThrow().id();
+                    int count = Integer.parseInt(guests.getText());
+                    int totalCapacity = selectedRooms.stream().mapToInt(room -> room.roomType().capacity()).sum();
+                    if (totalCapacity < count) throw new IllegalArgumentException("Сонгосон өрөөнүүдийн нийт багтаамж хүрэлцэхгүй байна.");
+                    JdbcReservationDao reservations = new JdbcReservationDao(factory);
+                    int remainingGuests = count;
+                    for (Room room : selectedRooms) {
+                        int assignedGuests = Math.min(room.roomType().capacity(), remainingGuests);
+                        reservations.create(customerId, room.id(), in.getValue(), out.getValue(), assignedGuests, request.getText(), userId);
+                        remainingGuests -= assignedGuests;
+                    }
+                    loadRooms(); loadReservations(); showInfo("Амжилттай", selectedRooms.size() + " өрөөний захиалга үүсгэлээ.");
+                } catch (Exception exception) { showError("Захиалга үүсгэхэд алдаа гарлаа", exception); }
+            });
         } catch (Exception exception) { showError("Захиалга эхлүүлэхэд алдаа гарлаа", exception); }
     }
 
