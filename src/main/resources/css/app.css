@@ -14,6 +14,17 @@
     -fx-background-color: -fx-background;
 }
 
+.content {
+    -fx-padding: 28;
+}
+
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
 .card,
 .topbar {
     -fx-background-color: -fx-surface;
@@ -80,4 +91,3 @@
     -fx-background-color: #e2e8f0;
     -fx-text-fill: -fx-text;
 }
-

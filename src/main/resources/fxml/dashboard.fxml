@@ -2,7 +2,11 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -12,9 +16,7 @@
             prefWidth="1100" prefHeight="700" styleClass="page-background">
     <top>
         <HBox alignment="CENTER_LEFT" spacing="16" styleClass="topbar">
-            <padding>
-                <Insets top="18" right="24" bottom="18" left="24"/>
-            </padding>
+            <padding><Insets top="18" right="24" bottom="18" left="24"/></padding>
             <VBox HBox.hgrow="ALWAYS">
                 <Label fx:id="welcomeLabel" styleClass="heading"/>
                 <Label fx:id="roleLabel" styleClass="muted-text"/>
@@ -24,11 +26,28 @@
         </HBox>
     </top>
     <center>
-        <VBox alignment="CENTER" spacing="12">
-            <Label text="Dashboard" styleClass="title"/>
-            <Label text="Дараагийн issue-ээр өрөөний төлөвийн картууд нэмэгдэнэ."
-                   styleClass="subtitle"/>
+        <VBox spacing="18" styleClass="content">
+            <VBox spacing="4">
+                <Label text="Өрөөний удирдлага" styleClass="title"/>
+                <Label text="Өрөөний төлөвийг харах, хайх болон шүүх" styleClass="subtitle"/>
+            </VBox>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="roomNumberFilter" promptText="Өрөөний дугаар" prefWidth="180"/>
+                <ComboBox fx:id="statusFilter" prefWidth="180"/>
+                <Button text="Хайх" onAction="#handleSearch" styleClass="primary-button"/>
+                <Button text="Шинэчлэх" onAction="#handleRefresh" styleClass="secondary-button"/>
+            </HBox>
+            <Label fx:id="roomMessageLabel" styleClass="muted-text"/>
+            <TableView fx:id="roomsTable" VBox.vgrow="ALWAYS" placeholder="Өрөөний мэдээлэл алга байна.">
+                <columns>
+                    <TableColumn fx:id="roomNumberColumn" text="Дугаар" prefWidth="120"/>
+                    <TableColumn fx:id="floorColumn" text="Давхар" prefWidth="100"/>
+                    <TableColumn fx:id="typeColumn" text="Төрөл" prefWidth="150"/>
+                    <TableColumn fx:id="capacityColumn" text="Багтаамж" prefWidth="110"/>
+                    <TableColumn fx:id="priceColumn" text="Үнэ / шөнө" prefWidth="150"/>
+                    <TableColumn fx:id="statusColumn" text="Төлөв" prefWidth="150"/>
+                </columns>
+            </TableView>
         </VBox>
     </center>
 </BorderPane>
-
