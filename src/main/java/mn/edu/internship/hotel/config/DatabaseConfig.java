@@ -9,7 +9,7 @@ public record DatabaseConfig(
 ) {
     public static DatabaseConfig fromEnvironment() {
         return new DatabaseConfig(
-                envOrDefault("DB_HOST", "localhost"),
+                envOrDefault("DB_HOST", "127.0.0.1"),
                 parsePort(envOrDefault("DB_PORT", "3306")),
                 envOrDefault("DB_NAME", "hotel_management"),
                 envOrDefault("DB_USER", "hotel_app"),
@@ -18,7 +18,8 @@ public record DatabaseConfig(
     }
 
     public String jdbcUrl() {
-        return "jdbc:mysql://%s:%d/%s?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC"
+        return ("jdbc:mysql://%s:%d/%s?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC"
+                + "&connectTimeout=5000&socketTimeout=5000")
                 .formatted(host, port, database);
     }
 
@@ -35,4 +36,3 @@ public record DatabaseConfig(
         }
     }
 }
-
